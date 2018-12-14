@@ -43,23 +43,23 @@ draw_cdf(icdfs[0], icdfs[2], label='cdf2 - interleaved', linewidth=4, alpha=0.3)
 plt.legend()
 plt.show()
 
-#sample = np.random.normal(size=100000)
-#w = np.ones_like(sample)
-#w[(sample > 0) & (sample < 1.)] = 0.5
-#
-#print("ks: {}".format(wks.ks_2samp_w(sample, sample, None, w)))
-#
-#fig, ax1 = plt.subplots()
-#_, bins, _ = ax1.hist(sample, bins=100, alpha=0.5)
-#ax1.hist(sample, weights=w, bins=bins, histtype='step')
-#cdf1 = wks.get_ecdf(sample)
-#cdf2 = wks.get_ecdf(sample, w)
-#
-#icdfs = wks._interleave_ecdfs(*cdf1, *cdf2)
-#ax2 = ax1.twinx()
-#ax2.plot(icdfs[0], icdfs[1], label='normal')
-#ax2.plot(icdfs[0], icdfs[2], label='weighted')
-#ax2.legend()
-#
-#fig.tight_layout()
-#plt.show()
+sample = np.random.normal(size=[100000, 1])
+w = np.ones_like(sample)
+w[(sample > 0) & (sample < 1.)] = 0.5
+
+print("ks: {}".format(sess.run(wks.ks_2samp_w(sample, sample, None, w))[0]))
+
+fig, ax1 = plt.subplots()
+_, bins, _ = ax1.hist(sample, bins=100, alpha=0.5)
+ax1.hist(sample, weights=w, bins=bins, histtype='step')
+cdf1 = wks.get_ecdf(sample)
+cdf2 = wks.get_ecdf(sample, w)
+
+icdfs = sess.run(wks._interleave_ecdfs(*cdf1, *cdf2))
+ax2 = ax1.twinx()
+ax2.plot(icdfs[0], icdfs[1], label='normal')
+ax2.plot(icdfs[0], icdfs[2], label='weighted')
+ax2.legend()
+
+fig.tight_layout()
+plt.show()
